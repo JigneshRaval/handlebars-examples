@@ -1,0 +1,236 @@
+<html>
+
+<head>
+    <title>Handlebars Example</title>
+    <meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <script src="js/jquery-3.0.0.js"></script>
+    <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: "Open Sans", Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.8;
+            background-color: #EEE;
+            color: #333;
+        }
+        h2 {
+            font-weight: 300; 
+            font-size: 1.8em;
+        }
+        .main-wrapper {
+            width: 80%;
+            margin: 0 auto;
+            padding: 2em;
+            background-color: #FFF;
+            border: 1px solid #CCC;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!--==================================================
+				EXAMPLE 1
+		======================================================-->
+        <div class="content-placeholder-1"></div>
+
+        <script id="expressions-template" type="text/x-handlebars-template">
+            <h2>Expression Example</h1>
+                {{description.escaped}} {{example}}
+
+                <br><br> {{description.unescaped}} {{{example}}}
+        </script>
+
+        <script>
+            $(function () {
+                // Define our data object
+                var dataExample1 = {
+                    "description": {
+                        "escaped": "Using {{}} brackets will result in escaped HTML:",
+                        "unescaped": "Using {{{}}} will leave the context as it is:"
+                    },
+                    "example": "<button> Hello </button>"
+                };
+
+                buildTemplate("#expressions-template", dataExample1, '.content-placeholder-1');
+            });
+        </script>
+
+        <!--==================================================
+            EXAMPLE 2
+		======================================================-->
+        <div class="content-placeholder-2"></div>
+
+        <!-- The #each helper iterates over an array of items. -->
+        <script id="example-template" type="text/x-handlebars-template">
+            <h2>List Example</h1>
+                <!-- people is looked up on the global context, the one we pass to the compiled template -->
+                <ul>
+                    {{#each people}}
+
+                    <!-- Here the context is each individual person. So we can access its properties directly: -->
+                    <li>{{firstName}} {{lastName}}</li>
+
+                    {{/each}}
+                </ul>
+
+        </script>
+
+        <script>
+            $(function () {
+                // This is the default context, which is passed to the template
+                var dataExample2 = {
+                    people: [
+                        { firstName: 'Homer', lastName: 'Simpson' },
+                        { firstName: 'Peter', lastName: 'Griffin' },
+                        { firstName: 'Eric', lastName: 'Cartman' },
+                        { firstName: 'Kenny', lastName: 'McCormick' },
+                        { firstName: 'Bart', lastName: 'Simpson' }
+                    ]
+                };
+
+                buildTemplate("#example-template", dataExample2, '.content-placeholder-2');
+            });
+        </script>
+
+        <!--==================================================
+		    EXAMPLE 3 : Partial Templates
+	    ======================================================-->
+        <style>
+            .person {
+                border: 1px solid #CCC;
+                margin: 1em;
+                padding: 1em;
+            }
+        </style>
+        <div id="list"><!-- Dynamic Data will be appened here --></idv>
+
+        <!-- Main TEmplate -->
+        <script id="people-template" type="text/x-handlebars-template">
+            <h2>Partial ( Nested ) Template Example</h2>
+            
+            <!-- Main Each Loop -->
+            {{#each people}} 
+                {{> person}} 
+            {{/each}}
+
+        </script>
+
+        <!-- Partial TEmplate -->
+        <script id="person-partial" type="text/x-handlebars-template">
+            <div class="person">
+
+                <h2>{{@index}} : {{first_name}} {{last_name}}</h2>
+                <div class="phone">{{phone}}</div>
+                <div class="email"><a href="mailto:{{email}}">{{email}}</a></div>
+                <div class="since">User since {{member_since}}</div>
+
+                <!-- Secondary or Nested Each Loop -->
+                <h2>Tabs</h2>
+                {{#if tabs}}
+                <div id="tabs">
+                    <ul>
+                        {{#each tabs}}
+                            <li><a href="#{{tabId}}">{{tabtitle}}</a></li>
+                        {{/each}}
+                    </ul>
+                    {{#each tabs}}
+                    <div id="{{tabId}}">
+                        <p>{{tabContent}}</p>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                    <p>No Tabs are available</p>
+                {{/if}}
+
+            </div>
+        </script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+
+                    var data = {
+                        people: [
+                            {
+                                first_name: "Alan",
+                                last_name: "Johnson",
+                                phone: "1234567890",
+                                email: "alan@test.com",
+                                member_since: "Mar 25, 2011",
+                                tabs: [
+                                    {
+                                        tabtitle: "Nunc tincidunt",
+                                        tabId: "tab-1",
+                                        tabContent: "Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus."
+                                    },
+                                    {
+                                        tabtitle: "Proin dolor",
+                                        tabId: "tab-2",
+                                        tabContent: "This is Tab content for Tab 2"
+                                    },
+                                    {
+                                        tabtitle: "Tab 3",
+                                        tabId: "tab-3",
+                                        tabContent: "This is Tab content for Tab 3"
+                                    }
+                                ]
+                            },
+                            { first_name: "Allison", last_name: "House", phone: "0987654321", email: "allison@test.com", member_since: "Jan 13, 2011" },
+                            { first_name: "Nick", last_name: "Pettit", phone: "9836592272", email: "nick@test.com", member_since: "Apr 9, 2009" },
+                            { first_name: "Jim", last_name: "Hoskins", phone: "7284927150", email: "jim@test.com", member_since: "May 21, 2010" },
+                            { first_name: "Ryan", last_name: "Carson", phone: "8263729224", email: "ryan@test.com", member_since: "Nov 1, 2008" }
+                        ]
+                    };
+
+                    buildTemplate('#people-template', data, '#list', ["person"])
+                    
+                    // Bind Tabs
+                    $(function () {
+                        $("#tabs").tabs();
+                    });
+
+                });
+
+            </script>
+
+            <script>
+                /**
+                 * Common function to build Template
+                 *
+                 */
+                function buildTemplate(templateId, data, placeholderId, partials) {
+                    // Grab the HTML code from template script
+                    var theTemplateScript = $(templateId).html();
+
+                    // Compile the template using Handlebars.compile() Method
+                    var theTemplate = Handlebars.compile(theTemplateScript);
+
+                    // If Partials or Nested Templates are used
+                    if(partials && partials.length > 0) {
+                        for(var i = 0; i < partials.length; i++) {
+                            // Following funtion requires two arguments
+                            // 1. Partial Name
+                            // 2. Partial HTML Code
+                            Handlebars.registerPartial(partials[i], $('#'+ partials[i] +'-partial').html());
+                        }
+                    }
+
+                    // Pass our data to the template
+                    var theCompiledHtml = theTemplate(data);
+
+                    // Add the compiled html to the page
+                    $(placeholderId).html(theCompiledHtml);
+                }
+            </script>
+        </div>
+</body>
+
+</html>
